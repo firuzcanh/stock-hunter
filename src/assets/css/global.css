@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #fff;
+    --foreground: #000;
+    --border: #d4d4d8;
+    --highlight: #f4f4f5;
+
+    --panel: #fff;
+    --panel-foreground: #000;
+
+    --muted: #f4f4f5;
+    --muted-foreground: #71717a;
+  }
+}
+
+@layer components {
+}
+
+.rt-TextFieldRoot:where(.rt-r-size-3),
+.rt-Button:where(.rt-r-size-3) {
+  font-size: var(--font-size-2);
+}
