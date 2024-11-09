@@ -47,7 +47,6 @@ const ToolShuffleKeywords: React.FC = () => {
           return (
             <TextArea
               placeholder="Enter keywords and separate them by using comma"
-              size="3"
               className="w-full"
               value={field.value}
               onChange={field.onChange}
@@ -58,9 +57,7 @@ const ToolShuffleKeywords: React.FC = () => {
 
       <Flex align="center" justify="between" wrap="wrap" className="w-full">
         <Flex gap="4" align="center">
-          <Button size="3" onClick={handleShuffleKeywords}>
-            Shuffle Keywords
-          </Button>
+          <Button onClick={handleShuffleKeywords}>Shuffle Keywords</Button>
 
           <Flex align="center" gap="3" className="w-[140px]">
             <Progress
@@ -84,7 +81,6 @@ const ToolShuffleKeywords: React.FC = () => {
                 <TextField.Root
                   type="number"
                   placeholder="0"
-                  size="3"
                   value={field.value}
                   onChange={(e) => field.onChange(+e.target.value)}
                 >

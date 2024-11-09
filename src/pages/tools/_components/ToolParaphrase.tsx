@@ -4,8 +4,8 @@ const ToolParaphrase: React.FC = () => {
   return (
     <Flex direction="column" gap="5">
       <Flex direction="column" align="start" gap="3">
-        <TextArea placeholder="Enter title here" size="3" className="w-full" />
-        <Button size="3">Paraphrase</Button>
+        <TextArea placeholder="Enter title here" className="w-full" />
+        <Button>Paraphrase</Button>
       </Flex>
 
       <Separator size="4" />
