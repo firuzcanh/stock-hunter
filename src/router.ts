@@ -8,12 +8,13 @@ export type Path =
   | `/content`
   | `/guide`
   | `/media`
+  | `/tools`
 
 export type Params = {
   
 }
 
-export type ModalPath = `/coffee` | `/modals/reset`
+export type ModalPath = `/modals/coffee` | `/modals/reset`
 
 export const { Link, Navigate } = components<Path, Params>()
 export const { useModals, useNavigate, useParams } = hooks<Path, Params, ModalPath>()

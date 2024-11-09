@@ -36,7 +36,11 @@ const ContentPage: React.FC = () => {
             Hard Reset
           </Button>
 
-          <Button size="1" color="brown" onClick={() => modals.open("/coffee")}>
+          <Button
+            size="1"
+            color="brown"
+            onClick={() => modals.open("/modals/coffee")}
+          >
             <CoffeeIcon size="14" /> Buy coffee
           </Button>
         </Layout.HeaderSlot>

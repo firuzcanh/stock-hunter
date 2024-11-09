@@ -2,7 +2,7 @@ import { useModals } from "@/router";
 import { Button, Dialog, Flex, Text } from "@radix-ui/themes";
 import qrCodeImage from "@/assets/images/firuzcan_qrcode.png";
 
-const Coffee: React.FC = () => {
+const CoffeeModal: React.FC = () => {
   const modals = useModals();
 
   return (
@@ -45,4 +45,4 @@ const Coffee: React.FC = () => {
   );
 };
 
-export default Coffee;
+export default CoffeeModal;
