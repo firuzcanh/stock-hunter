@@ -1,7 +1,7 @@
 export const APP_NAVS = [
   {
     label: "Contents",
-    value: "/content",
+    value: "/contents",
   },
   {
     label: "Media",
@@ -31,7 +31,7 @@ export const AI_PROVIDERS = [
   },
   {
     label: "ChatGPT",
-    value: "chat-gpt",
+    value: "chatgpt",
   },
 ];
 
@@ -47,10 +47,15 @@ export const AI_MODELS = {
     },
   ],
 
-  "chat-gpt": [
+  chatgpt: [
     {
       label: "4o",
       value: "4o",
     },
   ],
+};
+
+export const CONTENT_STATUSES = {
+  TODO: { label: "Todo", value: "TODO", color: "blue" },
+  DONE: { label: "Done", value: "DONE", color: "green" },
 };

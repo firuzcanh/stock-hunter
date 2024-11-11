@@ -5,7 +5,6 @@ import {
   Grid,
   IconButton,
   Select,
-  Separator,
   Text,
   TextArea,
   TextField,
@@ -68,10 +67,8 @@ const FormArea: React.FC = () => {
         </Flex>
       </Flex>
 
-      <Separator size="4" my="6" />
-
       {/* Submit */}
-      <Flex direction="column" gap="4">
+      <Flex direction="column" gap="4" mt="4">
         <TextArea rows={12} />
 
         <Flex align="center" gap="3">

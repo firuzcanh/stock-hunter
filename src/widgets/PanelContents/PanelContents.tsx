@@ -1,76 +1,96 @@
-import { List, Panel } from "@/components";
-import { Badge, IconButton, Tooltip } from "@radix-ui/themes";
+import { Link } from "@/router";
+import { useAppDispatch, useAppSelector } from "@/store";
+
+import {
+  ContentActions,
+  ContentSelectors,
+} from "@/store/features/content.slice";
+
+import { Badge, IconButton, Text, Tooltip } from "@radix-ui/themes";
 import { TrashIcon } from "lucide-react";
+import { Confirm, List, Panel } from "@/components";
 
 const PanelContents: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const contentGroups = useAppSelector(ContentSelectors.selectGroupByDate);
+  const contentTotal = useAppSelector((state) =>
+    ContentSelectors.selectTotal(state.content)
+  );
+
+  const handleDeleteAllContents = () => {
+    dispatch(ContentActions.removeAll());
+  };
+
   return (
     <Panel.Root>
       <Panel.Header>
         <Panel.Title>
           Contents{" "}
           <Badge ml="1" color="red">
-            3
+            {contentTotal}
           </Badge>
         </Panel.Title>
 
-        <Tooltip content="Clear all contents">
+        <Confirm
+          title="Are you sure?"
+          description="You'll lost all data after clear them"
+          onConfirm={handleDeleteAllContents}
+        >
           <IconButton
             size="3"
             color="gray"
             variant="ghost"
             aria-label="Clear contents"
           >
-            <TrashIcon size="16" />
+            <Tooltip content="Clear all contents">
+              <TrashIcon size="16" />
+            </Tooltip>
           </IconButton>
-        </Tooltip>
+        </Confirm>
       </Panel.Header>
 
       <Panel.Content>
-        <List.Root>
-          <List.Group>
-            <List.Heading>08 Nov 2024</List.Heading>
+        {contentTotal ? (
+          <List.Root>
+            {contentGroups.map((group) => {
+              return (
+                <List.Group key={group.date}>
+                  <List.Heading>{group.date}</List.Heading>
 
-            <List.Content className="-mx-2">
-              <List.Item isCompleted>
-                <List.ItemTitle>
-                  Woman holding several credit cards and he is choosing a credit
-                  card to pay and spend Payment for goods via credit card.
-                  Finance and banking concept.
-                </List.ItemTitle>
-              </List.Item>
-
-              <List.Item>
-                <List.ItemTitle>
-                  Woman holding several credit cards and he is choosing a credit
-                  card to pay and spend Payment for goods via credit card.
-                  Finance and banking concept.
-                </List.ItemTitle>
-              </List.Item>
-            </List.Content>
-          </List.Group>
-
-          <List.Group>
-            <List.Heading>08 Nov 2024</List.Heading>
-
-            <List.Content className="-mx-2">
-              <List.Item>
-                <List.ItemTitle>
-                  Woman holding several credit cards and he is choosing a credit
-                  card to pay and spend Payment for goods via credit card.
-                  Finance and banking concept.
-                </List.ItemTitle>
-              </List.Item>
-
-              <List.Item>
-                <List.ItemTitle>
-                  Woman holding several credit cards and he is choosing a credit
-                  card to pay and spend Payment for goods via credit card.
-                  Finance and banking concept.
-                </List.ItemTitle>
-              </List.Item>
-            </List.Content>
-          </List.Group>
-        </List.Root>
+                  {group.contents ? (
+                    <List.Content className="-mx-2">
+                      {group.contents.map((content) => {
+                        return (
+                          <List.Item
+                            asChild
+                            key={content.id}
+                            isCompleted={content.status === "DONE"}
+                          >
+                            <Link
+                              to="/contents/:id"
+                              params={{ id: content.id }}
+                            >
+                              <List.ItemTitle>{content.title}</List.ItemTitle>
+                            </Link>
+                          </List.Item>
+                        );
+                      })}
+                    </List.Content>
+                  ) : (
+                    <Text size="2" color="gray">
+                      No any content found
+                    </Text>
+                  )}
+                </List.Group>
+              );
+            })}
+          </List.Root>
+        ) : (
+          <Text size="2" color="gray">
+            There's no any content found.
+          </Text>
+        )}
       </Panel.Content>
     </Panel.Root>
   );

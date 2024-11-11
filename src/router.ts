@@ -5,14 +5,15 @@ import { components, hooks, utils } from '@generouted/react-router/client'
 
 export type Path =
   | `/`
-  | `/content`
+  | `/contents`
+  | `/contents/:id`
   | `/guide`
   | `/media`
   | `/prompt-generator`
   | `/tools`
 
 export type Params = {
-  
+  '/contents/:id': { id: string }
 }
 
 export type ModalPath = `/modals/coffee` | `/modals/reset`

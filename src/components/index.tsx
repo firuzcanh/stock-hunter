@@ -4,3 +4,5 @@ export { Panel } from "./Panel";
 export { Brand } from "./Brand";
 export { List } from "./List";
 export { Empty } from "./Empty";
+export { Confirm } from "./Confirm";
+export { Table } from "./Table";
