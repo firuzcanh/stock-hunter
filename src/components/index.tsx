@@ -6,3 +6,7 @@ export { List } from "./List";
 export { Empty } from "./Empty";
 export { Confirm } from "./Confirm";
 export { Table } from "./Table";
+export { DetailCard } from "./DetailCard";
+export { Marker } from "./Marker";
+export { Copy } from "./Copy";
+export { ContentEdit } from "./ContentEdit";

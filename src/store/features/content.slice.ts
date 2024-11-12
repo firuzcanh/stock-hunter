@@ -57,19 +57,19 @@ export const contentSlice = createSlice({
       entityAdapter.removeAll(state);
     },
 
-    updateOne(state, action: PayloadAction<ContentType>) {
+    updateOne(state, action: PayloadAction<Partial<ContentType>>) {
       const { id, ...changes } = action.payload;
       entityAdapter.updateOne(state, {
-        id,
+        id: id!,
         changes,
       });
     },
 
-    updateMany(state, action: PayloadAction<ContentType[]>) {
+    updateMany(state, action: PayloadAction<Partial<ContentType>[]>) {
       entityAdapter.updateMany(
         state,
         action.payload.map(({ id, ...changes }) => ({
-          id,
+          id: id!,
           changes,
         }))
       );

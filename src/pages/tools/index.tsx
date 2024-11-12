@@ -1,9 +1,9 @@
-import { Layout } from "@/components";
 import { Callout, Card, Flex, Text } from "@radix-ui/themes";
+import { InfoIcon } from "lucide-react";
+import { Layout } from "@/components";
 
 import ToolParaphrase from "./_components/ToolParaphrase";
 import ToolShuffleKeywords from "./_components/ToolShuffleKeywords";
-import { InfoIcon } from "lucide-react";
 
 const ToolsPage: React.FC = () => {
   return (
@@ -13,7 +13,7 @@ const ToolsPage: React.FC = () => {
       </Layout.Header>
 
       <Flex direction="column" gap="6" className="p-6">
-        <Callout.Root>
+        <Callout.Root variant="surface">
           <Callout.Icon>
             <InfoIcon size="16" />
           </Callout.Icon>
