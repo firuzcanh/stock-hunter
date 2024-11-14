@@ -47,4 +47,32 @@ export class ShutterStockService
       createdAt: new Date(),
     };
   }
+
+  getCategories(): { label: string; value: string }[] {
+    return [
+      { label: "Transportation", value: "0" },
+      { label: "Animals/Wildlife", value: "1" },
+      { label: "Buildings/Landmarks", value: "2" },
+      { label: "Backgrounds/Textures", value: "3" },
+      { label: "Business/Finance", value: "4" },
+      { label: "Education", value: "5" },
+      { label: "Food and Drink", value: "6" },
+      { label: "Healthcare/Medical", value: "7" },
+      { label: "Holidays", value: "8" },
+      { label: "Objects", value: "9" },
+      { label: "Industrial", value: "10" },
+      { label: "Nature", value: "12" },
+      { label: "People", value: "13" },
+      { label: "Religion", value: "14" },
+      { label: "Science", value: "15" },
+      { label: "Technology", value: "16" },
+      { label: "Signs/Symbols", value: "17" },
+      { label: "Sports/Recreation", value: "18" },
+      { label: "Interiors", value: "21" },
+      { label: "Vintage", value: "24" },
+      { label: "Parks/Outdoor", value: "25" },
+      { label: "Abstract", value: "26" },
+      { label: "Beauty/Fashion", value: "27" },
+    ];
+  }
 }

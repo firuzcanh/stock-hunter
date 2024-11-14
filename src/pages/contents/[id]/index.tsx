@@ -74,7 +74,6 @@ const ContentsDetailPage: React.FC = () => {
   };
 
   const handleUpdate = (key: keyof ContentType, value: any) => {
-    console.log(">>>", { key, value });
     dispatch(ContentActions.updateOne({ id: contentId, [key]: value }));
   };
 

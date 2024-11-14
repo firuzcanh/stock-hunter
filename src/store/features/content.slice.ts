@@ -59,6 +59,7 @@ export const contentSlice = createSlice({
 
     updateOne(state, action: PayloadAction<Partial<ContentType>>) {
       const { id, ...changes } = action.payload;
+
       entityAdapter.updateOne(state, {
         id: id!,
         changes,

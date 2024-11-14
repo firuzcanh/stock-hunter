@@ -1,9 +1,12 @@
 import { MediaType } from "@/types/media.type";
 import {
   createEntityAdapter,
+  createSelector,
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
+import store, { RootState } from "..";
+import { ContentSelectors } from "./content.slice";
 
 const entityAdapter = createEntityAdapter<MediaType>();
 
@@ -16,6 +19,8 @@ export const mediaSlice = createSlice({
     },
 
     upsertMany(state, action: PayloadAction<MediaType[]>) {
+      console.log(action.payload);
+
       entityAdapter.upsertMany(state, action.payload);
     },
 
@@ -27,19 +32,19 @@ export const mediaSlice = createSlice({
       entityAdapter.removeMany(state, action.payload);
     },
 
-    updateOne(state, action: PayloadAction<MediaType>) {
+    updateOne(state, action: PayloadAction<Partial<MediaType>>) {
       const { id, ...changes } = action.payload;
       entityAdapter.updateOne(state, {
-        id,
+        id: id!,
         changes,
       });
     },
 
-    updateMany(state, action: PayloadAction<MediaType[]>) {
+    updateMany(state, action: PayloadAction<Partial<MediaType>[]>) {
       entityAdapter.updateMany(
         state,
         action.payload.map(({ id, ...changes }) => ({
-          id,
+          id: id!,
           changes,
         }))
       );
@@ -47,6 +52,51 @@ export const mediaSlice = createSlice({
   },
 });
 
-export const MediaSelectors = entityAdapter.getSelectors();
+export const MediaSelectors = {
+  ...entityAdapter.getSelectors(),
 
-export const MediaActions = mediaSlice.actions;
+  selectMatchedsWithContents: createSelector(
+    (state: RootState) => state,
+    ({ content, media }) => {
+      const contents = ContentSelectors.selectAll(content);
+      const medias = MediaSelectors.selectAll(media);
+
+      const matched: MediaType[] = medias.filter((media) =>
+        contents.some(({ id }) => media.contentId === id)
+      );
+
+      const unmatched: MediaType[] = medias.filter(
+        (media) => !contents.some(({ id }) => media.contentId === id)
+      );
+
+      return { matched, unmatched };
+    }
+  ),
+};
+
+export const MediaActions = {
+  ...mediaSlice.actions,
+
+  syncWithContents: () => {
+    const state = store.getState();
+
+    const medias = MediaSelectors.selectAll(state.media).filter(
+      ({ contentId }) => !contentId
+    );
+
+    const changes = medias.map((media) => {
+      // Get content by stockId
+      const content = ContentSelectors.selectAll(state.content)?.find(
+        (content) => content.stockId === media.stockId
+      );
+
+      return {
+        id: media.id,
+        contentId: content?.id,
+        stockId: content?.stockId,
+      };
+    });
+
+    return MediaActions.updateMany(changes);
+  },
+};

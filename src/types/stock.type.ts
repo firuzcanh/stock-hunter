@@ -3,6 +3,7 @@ import { ContentCategoryType, ContentType } from "./content.type";
 export interface IStockService<TJson = any> {
   parseJSON(jsonString: string): TJson;
   convertToContentJSON(json: TJson): Promise<ContentType>;
+  getCategories(): { label: string; value: string }[];
 }
 
 export type StockProviderType = "shutterstock";
