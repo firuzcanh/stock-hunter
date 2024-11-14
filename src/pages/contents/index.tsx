@@ -19,14 +19,12 @@ import {
   Select,
   Text,
 } from "@radix-ui/themes";
-import { createColumnHelper, RowSelectionState } from "@tanstack/react-table";
 import {
-  ChevronDownIcon,
-  CoffeeIcon,
-  EraserIcon,
-  EyeIcon,
-  TrashIcon,
-} from "lucide-react";
+  ColumnFiltersState,
+  createColumnHelper,
+  RowSelectionState,
+} from "@tanstack/react-table";
+import { ChevronDownIcon, EraserIcon, EyeIcon, TrashIcon } from "lucide-react";
 import { Confirm, Empty, Layout, Table } from "@/components";
 import { SvgSetupWizard } from "@/components/illustrations";
 
@@ -51,6 +49,7 @@ const ContentsPage: React.FC = () => {
     [selectedContents]
   );
 
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const hasContents = contents?.length > 0;
 
   const columnHelper = createColumnHelper<ContentType>();
@@ -166,6 +165,17 @@ const ContentsPage: React.FC = () => {
     );
   };
 
+  const handleSelectStatus = (status: any | null) => {
+    setRowSelection({});
+    if (status) {
+      setColumnFilters((prev) => [...prev, { id: "status", value: status }]);
+    } else {
+      setColumnFilters((prev) =>
+        prev.filter((column) => column.id !== "status")
+      );
+    }
+  };
+
   return (
     <Layout.Content>
       <Layout.Header>
@@ -180,14 +190,6 @@ const ContentsPage: React.FC = () => {
             <EraserIcon size="14" />
             Hard Reset
           </Button>
-
-          <Button
-            size="1"
-            color="brown"
-            onClick={() => modals.open("/modals/coffee")}
-          >
-            <CoffeeIcon size="14" /> Buy coffee
-          </Button>
         </Layout.HeaderSlot>
       </Layout.Header>
 
@@ -198,6 +200,7 @@ const ContentsPage: React.FC = () => {
             data={contents}
             state={{
               rowSelection,
+              columnFilters,
             }}
             listeners={{ onRowSelectionChange: setRowSelection }}
           >
@@ -214,9 +217,19 @@ const ContentsPage: React.FC = () => {
                   </DropdownMenu.Trigger>
 
                   <DropdownMenu.Content>
-                    <DropdownMenu.Item>All</DropdownMenu.Item>
-                    <DropdownMenu.Item>Todo</DropdownMenu.Item>
-                    <DropdownMenu.Item>Done</DropdownMenu.Item>
+                    <DropdownMenu.Item
+                      onSelect={() => handleSelectStatus(null)}
+                    >
+                      All
+                    </DropdownMenu.Item>
+                    {Object.values(CONTENT_STATUSES).map((status) => (
+                      <DropdownMenu.Item
+                        key={status.value}
+                        onSelect={() => handleSelectStatus(status.value)}
+                      >
+                        {status.label}
+                      </DropdownMenu.Item>
+                    ))}
                   </DropdownMenu.Content>
                 </DropdownMenu.Root>
               }

@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { Link } from "@/router";
 import { useAppDispatch, useAppSelector } from "@/store";
 
@@ -11,6 +12,7 @@ import { TrashIcon } from "lucide-react";
 import { Confirm, List, Panel } from "@/components";
 
 const PanelContents: React.FC = () => {
+  const { pathname } = useLocation();
   const dispatch = useAppDispatch();
 
   const contentGroups = useAppSelector(ContentSelectors.selectGroupByDate);
@@ -61,11 +63,13 @@ const PanelContents: React.FC = () => {
                   {group.contents ? (
                     <List.Content className="-mx-2">
                       {group.contents.map((content) => {
+                        const isActive = pathname.includes(content.id);
                         return (
                           <List.Item
                             asChild
                             key={content.id}
                             isCompleted={content.status === "DONE"}
+                            isActive={isActive}
                           >
                             <Link
                               to="/contents/:id"
