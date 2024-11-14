@@ -72,6 +72,17 @@ export const MediaSelectors = {
       return { matched, unmatched };
     }
   ),
+
+  selectManyByContentId: createSelector(
+    [
+      (state: RootState["media"]) => state,
+      (_state, contentId: string) => contentId,
+    ],
+    (state, contentId: string) => {
+      const medias: MediaType[] = MediaSelectors.selectAll(state) || [];
+      return medias.filter((media) => media.contentId === contentId);
+    }
+  ),
 };
 
 export const MediaActions = {

@@ -1,22 +1,17 @@
+import { ContentType } from "@/types/content.type";
+
 import { Navigate, useParams } from "@/router";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { useState } from "react";
 
-import { shuffleArray } from "@/utils/functions";
 import { Services } from "@/services";
 import {
   ContentActions,
   ContentSelectors,
 } from "@/store/features/content.slice";
+import { MediaSelectors } from "@/store/features/media.slice";
+import { shuffleArray } from "@/utils/functions";
 
-import {
-  Badge,
-  IconButton,
-  Link as RadixLink,
-  Separator,
-  Tooltip,
-} from "@radix-ui/themes";
-import { RefreshCwIcon, TrashIcon } from "lucide-react";
 import {
   Confirm,
   ContentEdit,
@@ -25,10 +20,18 @@ import {
   Layout,
   Marker,
 } from "@/components";
+import {
+  Badge,
+  Grid,
+  IconButton,
+  Link as RadixLink,
+  Separator,
+  Tooltip,
+} from "@radix-ui/themes";
+import { RefreshCwIcon, TrashIcon } from "lucide-react";
 import Alerts from "./_components/Alerts";
 
 import { DEFAULT_CONFIGS } from "@/constants/configs";
-import { ContentType } from "@/types/content.type";
 
 const ContentsDetailPage: React.FC = () => {
   const { id: contentId } = useParams("/contents/:id");
@@ -41,6 +44,11 @@ const ContentsDetailPage: React.FC = () => {
   // Content Object
   const content = useAppSelector((state) =>
     ContentSelectors.selectById(state.content, contentId)
+  );
+
+  // Medias Array
+  const medias = useAppSelector((state) =>
+    MediaSelectors.selectManyByContentId(state.media, contentId)
   );
 
   const [isLoadingParaphrase, setIsLoadingParaphrase] = useState(false);
@@ -106,6 +114,26 @@ const ContentsDetailPage: React.FC = () => {
       <div className="p-8">
         {/* Alert Messages */}
         <Alerts content={content} />
+
+        {/* START :: Medias */}
+        {medias?.length > 0 ? (
+          <DetailCard.Root>
+            <DetailCard.Label children={<Marker>Medias</Marker>} />
+            <DetailCard.Slot>
+              <Grid columns="8" gap="3">
+                {medias?.map((media) => (
+                  <img
+                    key={media.id}
+                    src={`${media.preview}`}
+                    alt=""
+                    className="aspect-square rounded-lg border border-border p-0.5 bg-background object-cover"
+                  />
+                ))}
+              </Grid>
+            </DetailCard.Slot>
+          </DetailCard.Root>
+        ) : null}
+        {/* END :: Medias */}
 
         {/* START :: ID */}
         <DetailCard.Root>

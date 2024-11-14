@@ -2,15 +2,14 @@ import type { ContentType } from "@/types/content.type";
 
 import { useMemo, useState } from "react";
 import { Link, useModals } from "@/router";
-import { useAppDispatch, useAppSelector } from "@/store";
 import { format } from "date-fns";
 
+import { useAppDispatch, useAppSelector } from "@/store";
 import {
   ContentActions,
   ContentSelectors,
 } from "@/store/features/content.slice";
 
-import { createColumnHelper, RowSelectionState } from "@tanstack/react-table";
 import {
   Badge,
   Button,
@@ -20,14 +19,16 @@ import {
   Select,
   Text,
 } from "@radix-ui/themes";
+import { createColumnHelper, RowSelectionState } from "@tanstack/react-table";
 import {
   ChevronDownIcon,
   CoffeeIcon,
+  EraserIcon,
   EyeIcon,
   TrashIcon,
-  EraserIcon,
 } from "lucide-react";
-import { Confirm, Layout, Table } from "@/components";
+import { Confirm, Empty, Layout, Table } from "@/components";
+import { SvgSetupWizard } from "@/components/illustrations";
 
 import { CONTENT_STATUSES } from "@/constants/data";
 
@@ -49,6 +50,8 @@ const ContentsPage: React.FC = () => {
     () => selectedContents?.map((content) => content.id),
     [selectedContents]
   );
+
+  const hasContents = contents?.length > 0;
 
   const columnHelper = createColumnHelper<ContentType>();
   const columns = [
@@ -188,66 +191,83 @@ const ContentsPage: React.FC = () => {
         </Layout.HeaderSlot>
       </Layout.Header>
 
-      <div className="flex-1 flex flex-col p-6">
-        <Table.Root
-          columns={columns}
-          data={contents}
-          state={{
-            rowSelection,
-          }}
-          listeners={{ onRowSelectionChange: setRowSelection }}
-        >
-          <Table.Header
-            startContent={
-              <DropdownMenu.Root>
-                <DropdownMenu.Trigger>
-                  <Button color="gray" variant="surface">
-                    <Text>
-                      Status: <Text className="font-semibold">All</Text>
-                    </Text>
-                    <ChevronDownIcon size="16" />
-                  </Button>
-                </DropdownMenu.Trigger>
+      {hasContents && (
+        <div className="flex-1 flex flex-col p-6">
+          <Table.Root
+            columns={columns}
+            data={contents}
+            state={{
+              rowSelection,
+            }}
+            listeners={{ onRowSelectionChange: setRowSelection }}
+          >
+            <Table.Header
+              startContent={
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger>
+                    <Button color="gray" variant="surface">
+                      <Text>
+                        Status: <Text className="font-semibold">All</Text>
+                      </Text>
+                      <ChevronDownIcon size="16" />
+                    </Button>
+                  </DropdownMenu.Trigger>
 
-                <DropdownMenu.Content>
-                  <DropdownMenu.Item>All</DropdownMenu.Item>
-                  <DropdownMenu.Item>Todo</DropdownMenu.Item>
-                  <DropdownMenu.Item>Done</DropdownMenu.Item>
-                </DropdownMenu.Content>
-              </DropdownMenu.Root>
-            }
-            endContent={
-              selectedContentIDs?.length ? (
-                <>
-                  <Confirm
-                    description="You'll lost all data after clear them"
-                    onConfirm={handleDeleteMany}
-                  >
-                    <IconButton color="red" variant="soft">
-                      <TrashIcon className="w-4" />
-                    </IconButton>
-                  </Confirm>
+                  <DropdownMenu.Content>
+                    <DropdownMenu.Item>All</DropdownMenu.Item>
+                    <DropdownMenu.Item>Todo</DropdownMenu.Item>
+                    <DropdownMenu.Item>Done</DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Root>
+              }
+              endContent={
+                selectedContentIDs?.length ? (
+                  <>
+                    <Confirm
+                      description="You'll lost all data after clear them"
+                      onConfirm={handleDeleteMany}
+                    >
+                      <IconButton color="red" variant="soft">
+                        <TrashIcon className="w-4" />
+                      </IconButton>
+                    </Confirm>
 
-                  <Select.Root onValueChange={handleChangeStatus}>
-                    <Select.Trigger placeholder="Select Status" />
+                    <Select.Root onValueChange={handleChangeStatus}>
+                      <Select.Trigger placeholder="Select Status" />
 
-                    <Select.Content>
-                      {Object.values(CONTENT_STATUSES).map((status) => {
-                        return (
-                          <Select.Item key={status.value} value={status.value}>
-                            {status.label}
-                          </Select.Item>
-                        );
-                      })}
-                    </Select.Content>
-                  </Select.Root>
-                </>
-              ) : null
-            }
-          />
-          <Table.Body className="flex-1" />
-        </Table.Root>
-      </div>
+                      <Select.Content>
+                        {Object.values(CONTENT_STATUSES).map((status) => {
+                          return (
+                            <Select.Item
+                              key={status.value}
+                              value={status.value}
+                            >
+                              {status.label}
+                            </Select.Item>
+                          );
+                        })}
+                      </Select.Content>
+                    </Select.Root>
+                  </>
+                ) : null
+              }
+            />
+            <Table.Body className="flex-1" />
+          </Table.Root>
+        </div>
+      )}
+
+      {!hasContents && (
+        <div className="flex-1 flex flex-col justify-center container max-w-screen-sm mb-10">
+          <Empty.Root>
+            <Empty.Icon children={<SvgSetupWizard />} />
+            <Empty.Title>No any contents found</Empty.Title>
+            <Empty.Description>
+              You can see list of your contents here after adding them.
+            </Empty.Description>
+          </Empty.Root>
+        </div>
+      )}
     </Layout.Content>
   );
 };

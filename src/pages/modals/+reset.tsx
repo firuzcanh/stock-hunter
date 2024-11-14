@@ -1,12 +1,17 @@
+import { useModals } from "@/router";
+
+import { Button, Dialog, Flex } from "@radix-ui/themes";
 import { Empty } from "@/components";
 import { SvgTrash } from "@/components/illustrations";
-import { useModals } from "@/router";
-import { Button, Dialog, Flex } from "@radix-ui/themes";
 
 const ResetModal: React.FC = () => {
   const modals = useModals();
 
-  const handleReset = () => {};
+  const handleReset = () => {
+    localStorage.clear();
+    modals.close();
+    window.location.reload();
+  };
 
   return (
     <Dialog.Root open onOpenChange={() => modals.close()}>
