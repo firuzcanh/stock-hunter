@@ -265,7 +265,7 @@ const ContentsPage: React.FC = () => {
                 ) : null
               }
             />
-            <Table.Body className="flex-1" />
+            <Table.Body className="flex-1 overflow-y-auto" />
           </Table.Root>
         </div>
       )}
