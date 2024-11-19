@@ -19,6 +19,7 @@ export class ChatGPTService implements IAIService<any> {
   ): Promise<ResponseType<AICompletionsType<any>>> {
     console.log(">>", prompt);
     alert("ChatGPT service is not ready yet.");
+    console.log(this.apiKey, this.options);
     return { data: { text: "", response: "" }, error: null, status: true };
   }
 
