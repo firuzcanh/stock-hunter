@@ -182,7 +182,7 @@ const ContentsDetailPage: React.FC = () => {
                   children={<RefreshCwIcon size="14" />}
                 />
                 <Copy.Button
-                  value={content.titleParaphrased}
+                  value={`${content.titleParaphrased} ID_${content.id}`}
                   size="1"
                   className="opacity-0 group-hover:opacity-100"
                 />
@@ -303,7 +303,7 @@ const ContentsDetailPage: React.FC = () => {
                   {content.title?.length || 0}
                 </Badge>
                 <Copy.Button
-                  value={content.title}
+                  value={`${content.title} ID_${content.id}`}
                   size="1"
                   className="opacity-0 group-hover:opacity-100"
                 />
