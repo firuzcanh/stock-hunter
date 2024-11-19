@@ -1,5 +1,5 @@
 import { Navigate } from "@/router";
 
-const RootPage: React.FC = () => <Navigate to="/contents" replace />;
+const RootPage: React.FC = () => <Navigate to="/contents" />;
 
 export default RootPage;
