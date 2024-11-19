@@ -24,7 +24,11 @@ const TableBody: React.FC<TableBodyProps> = ({ className }) => {
                   );
 
               return (
-                <Table.ColumnHeaderCell key={header.id}>
+                <Table.ColumnHeaderCell
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  style={{ width: header.getSize() }}
+                >
                   {headerContent}
                 </Table.ColumnHeaderCell>
               );
@@ -37,7 +41,12 @@ const TableBody: React.FC<TableBodyProps> = ({ className }) => {
         {table.getRowModel().rows.map((row) => (
           <Table.Row key={row.id} align="center">
             {row.getVisibleCells().map((cell) => (
-              <Table.Cell key={cell.id}>
+              <Table.Cell
+                key={cell.id}
+                style={{
+                  width: cell.column.getSize(),
+                }}
+              >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </Table.Cell>
             ))}

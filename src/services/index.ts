@@ -3,6 +3,7 @@ import { AIServiceFactory } from "./AI/core/AIFactory";
 import { StockServiceFactory } from "./Stock/core/StockFactory";
 import { FileService } from "./File/FileService";
 import { MediaService } from "./Media/MediaService";
+import { AdobeStockService } from "./AdobeStock/AdobeStockService";
 
 export const Services = {
   get AI() {
@@ -21,4 +22,6 @@ export const Services = {
   File: new FileService(),
 
   Media: new MediaService(),
+
+  AdobeStock: new AdobeStockService(),
 };

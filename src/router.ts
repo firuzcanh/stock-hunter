@@ -7,9 +7,9 @@ export type Path =
   | `/`
   | `/contents`
   | `/contents/:id`
+  | `/custom-contents`
   | `/guide`
   | `/media`
-  | `/prompt-generator`
   | `/tools`
 
 export type Params = {

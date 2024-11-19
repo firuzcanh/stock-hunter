@@ -8,8 +8,8 @@ export const APP_NAVS = [
     value: "/media",
   },
   {
-    label: "Prompt Generator",
-    value: "/prompt-generator",
+    label: "Custom Contents",
+    value: "/custom-contents",
   },
   {
     label: "Tools",

@@ -68,3 +68,17 @@ export async function getResizedImageDataUrl(
     };
   });
 }
+
+export function parseJsonFromText(text: string = "") {
+  try {
+    const jsonAsText = text.replace(/```json\n|\n```/g, "").trim();
+    return JSON.parse(jsonAsText);
+  } catch {
+    const jsonAsText = text
+      .replace(/(\w+):/g, '"$1":') // Add quotes to keys
+      .replace(/: "([^"]+)"/g, ': "$1"') // Fix double quotes
+      .replace(/: '([^']+)'/g, ': "$1"'); // Convert single to double quotes
+
+    return JSON.parse(jsonAsText);
+  }
+}

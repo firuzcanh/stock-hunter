@@ -4,9 +4,9 @@ import { Separator } from "@radix-ui/themes";
 import { Layout } from "@/components";
 
 import PanelAIProvider from "@/widgets/PanelAIProvider/PanelAIProvider";
-import PanelExport from "@/widgets/PanelExport/PanelExport";
+import PanelExportCustomContents from "@/widgets/PanelExportCustomContents/PanelExportCustomContents";
 
-const PromptGeneratorLayout: React.FC = () => {
+const CustomContentsLayout: React.FC = () => {
   return (
     <Layout.Root>
       <Outlet />
@@ -15,11 +15,11 @@ const PromptGeneratorLayout: React.FC = () => {
         <PanelAIProvider />
         <Separator size="4" />
 
-        <PanelExport />
+        <PanelExportCustomContents />
         <Separator size="4" />
       </Layout.Sidebar>
     </Layout.Root>
   );
 };
 
-export default PromptGeneratorLayout;
+export default CustomContentsLayout;

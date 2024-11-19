@@ -7,7 +7,7 @@ import { ErrorMiddleware } from "@/store/middlewares/error.middleware";
 
 import { configsSlice } from "./features/configs.slice";
 import { contentSlice } from "./features/content.slice";
-import { promptGeneratorSlice } from "./features/prompt-generator.slice";
+import { customContentSlice } from "./features/custom-content";
 import { mediaSlice } from "./features/media.slice";
 
 const persistConfig = {
@@ -16,7 +16,7 @@ const persistConfig = {
   whitelist: [
     configsSlice.reducerPath,
     contentSlice.reducerPath,
-    promptGeneratorSlice.reducerPath,
+    customContentSlice.reducerPath,
   ],
 };
 
@@ -24,7 +24,7 @@ const rootReducer = combineReducers({
   [configsSlice.reducerPath]: configsSlice.reducer,
   [contentSlice.reducerPath]: contentSlice.reducer,
   [mediaSlice.reducerPath]: mediaSlice.reducer,
-  [promptGeneratorSlice.reducerPath]: promptGeneratorSlice.reducer,
+  [customContentSlice.reducerPath]: customContentSlice.reducer,
 });
 
 const reducer = persistReducer(persistConfig, rootReducer);
