@@ -56,6 +56,7 @@ const ContentsPage: React.FC = () => {
   const columns = [
     columnHelper.display({
       id: "select",
+      size: 0,
       header: ({ table }) => {
         return (
           <input
@@ -79,6 +80,7 @@ const ContentsPage: React.FC = () => {
 
     columnHelper.accessor("title", {
       header: "Title",
+      size: 600,
       cell: ({ row }) => (
         <Link
           to="/contents/:id"
