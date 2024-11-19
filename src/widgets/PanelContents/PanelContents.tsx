@@ -9,7 +9,7 @@ import {
 
 import { Badge, IconButton, Text, Tooltip } from "@radix-ui/themes";
 import { TrashIcon } from "lucide-react";
-import { Confirm, List, Panel } from "@/components";
+import { Confirm, Copy, List, Panel } from "@/components";
 
 const PanelContents: React.FC = () => {
   const { pathname } = useLocation();
@@ -65,19 +65,23 @@ const PanelContents: React.FC = () => {
                       {group.contents.map((content) => {
                         const isActive = pathname.includes(content.id);
                         return (
-                          <List.Item
-                            asChild
-                            key={content.id}
-                            isCompleted={content.status === "DONE"}
-                            isActive={isActive}
+                          <Copy.Slot
+                            value={`${content.titleParaphrased} ID_${content.id}`}
                           >
-                            <Link
-                              to="/contents/:id"
-                              params={{ id: content.id }}
+                            <List.Item
+                              asChild
+                              key={content.id}
+                              isCompleted={content.status === "DONE"}
+                              isActive={isActive}
                             >
-                              <List.ItemTitle>{content.title}</List.ItemTitle>
-                            </Link>
-                          </List.Item>
+                              <Link
+                                to="/contents/:id"
+                                params={{ id: content.id }}
+                              >
+                                <List.ItemTitle>{content.title}</List.ItemTitle>
+                              </Link>
+                            </List.Item>
+                          </Copy.Slot>
                         );
                       })}
                     </List.Content>
