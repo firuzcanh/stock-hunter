@@ -53,7 +53,7 @@ const ContentsDetailPage: React.FC = () => {
 
   const [isLoadingParaphrase, setIsLoadingParaphrase] = useState(false);
 
-  const categoriesAsString = (content.categories || [])
+  const categoriesAsString = (content?.categories || [])
     ?.map((category) => category.name)
     ?.join(", ");
 
