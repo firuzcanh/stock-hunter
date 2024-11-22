@@ -1,23 +1,26 @@
 export function shuffleArray(array: any[], offset: number = 0): any[] {
-  const newArray = [...array];
-  const hasOffset = array.length >= offset;
-
-  // Shuffle the first x items amongst themselves
-  if (offset && hasOffset) {
-    for (let i = 0; i < offset; i++) {
-      const j = Math.floor(Math.random() * (offset - i)) + i;
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
+  // Input validation
+  if (offset < 0) {
+    throw new Error("Offset must be non-negative");
   }
 
-  // Shuffle the rest of the items randomly
-  const startNumber = hasOffset ? offset : 0;
-  for (let i = startNumber; i < newArray.length - 1; i++) {
-    const j = Math.floor(Math.random() * (newArray.length - i)) + i;
-    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  const result = [...array];
+  const effectiveOffset = Math.min(offset - 1, array.length - 1);
+
+  // Shuffle first part (0 to offset)
+  for (let i = 0; i <= effectiveOffset; i++) {
+    const randomIndex =
+      Math.floor(Math.random() * (effectiveOffset + 1 - i)) + i;
+    [result[i], result[randomIndex]] = [result[randomIndex], result[i]];
   }
 
-  return newArray;
+  // Shuffle second part (offset+1 to end)
+  for (let i = effectiveOffset + 1; i < array.length; i++) {
+    const randomIndex = Math.floor(Math.random() * (array.length - i)) + i;
+    [result[i], result[randomIndex]] = [result[randomIndex], result[i]];
+  }
+
+  return result;
 }
 
 export async function getResizedImageDataUrl(
