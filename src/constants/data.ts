@@ -38,12 +38,16 @@ export const AI_PROVIDERS = [
 export const AI_MODELS = {
   gemini: [
     {
-      label: "Pro",
-      value: "gemini-pro",
+      label: "2.5 Pro",
+      value: "gemini-2.5-pro",
     },
     {
-      label: "Flash",
-      value: "gemini-1.5-flash",
+      label: "2.5 Flash",
+      value: "gemini-2.5-flash",
+    },
+    {
+      label: "2.0 Flash",
+      value: "gemini-2.0-flash",
     },
   ],
 
