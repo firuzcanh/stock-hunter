@@ -7,9 +7,9 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 
-const entityAdapter = createEntityAdapter<FolderType>({
-  sortComparer: (a, b) => a.createdAt - b.createdAt,
-});
+// No sortComparer: folder order is manual (drag-and-drop sortable),
+// preserved as the insertion/`ids` order.
+const entityAdapter = createEntityAdapter<FolderType>();
 
 type ExtraState = {
   activeFolderId: string | null;
@@ -42,6 +42,15 @@ export const folderSlice = createSlice({
 
     setActiveFolder(state, action: PayloadAction<string | null>) {
       state.activeFolderId = action.payload;
+    },
+
+    reorder(state, action: PayloadAction<string[]>) {
+      // Keep only known ids, in the new order (defensive against stale drags)
+      const known = new Set(state.ids as string[]);
+      const next = action.payload.filter((id) => known.has(id));
+      if (next.length === state.ids.length) {
+        state.ids = next;
+      }
     },
   },
 });

@@ -7,6 +7,9 @@ export const DEFAULT_CONFIGS = {
   THEME: "system" as ThemeMode,
   ACCENT_COLOR: "gray",
 
+  CONTENTS_VIEW: "grid" as "grid" | "list",
+  GRID_COLUMNS: 5,
+
   AI_PROVIDER: "gemini" as AIProvider,
   AI_MODEL: "gemini-pro" as AIServiceOptions["model"],
 

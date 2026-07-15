@@ -7,6 +7,7 @@ import { DEFAULT_CONFIGS } from "@/constants/configs";
 import { AI_MODELS } from "@/constants/data";
 
 export type ThemeMode = "light" | "dark" | "system";
+export type ContentsViewMode = "grid" | "list";
 
 type ConfigsStateType = {
   platform: string;
@@ -14,6 +15,11 @@ type ConfigsStateType = {
   appearance: {
     theme: ThemeMode;
     accentColor: string;
+  };
+
+  contents: {
+    viewMode: ContentsViewMode;
+    gridColumns: number;
   };
 
   ai: {
@@ -35,6 +41,11 @@ const initialState: ConfigsStateType = {
   appearance: {
     theme: DEFAULT_CONFIGS.THEME,
     accentColor: DEFAULT_CONFIGS.ACCENT_COLOR,
+  },
+
+  contents: {
+    viewMode: DEFAULT_CONFIGS.CONTENTS_VIEW,
+    gridColumns: DEFAULT_CONFIGS.GRID_COLUMNS,
   },
 
   ai: {
@@ -64,6 +75,14 @@ export const configsSlice = createSlice({
 
     setAccentColor(state, action: PayloadAction<string>) {
       state.appearance.accentColor = action.payload;
+    },
+
+    setContentsViewMode(state, action: PayloadAction<ContentsViewMode>) {
+      state.contents.viewMode = action.payload;
+    },
+
+    setContentsGridColumns(state, action: PayloadAction<number>) {
+      state.contents.gridColumns = action.payload;
     },
 
     setAIProvider(state, action: PayloadAction<AIProvider>) {

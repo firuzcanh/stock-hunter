@@ -16,6 +16,7 @@
 
     /* Lines & states */
     --border: #e2e2e6; /* outline-variant */
+    --divider: #ededf1; /* soft hairline between sections */
     --highlight: #ececf0; /* state layer (hover / active) */
 
     /* Muted / secondary */
@@ -45,6 +46,7 @@
     --foreground: #e5e5ea;
 
     --border: #37373d; /* outline-variant */
+    --divider: #2a2a30; /* soft hairline between sections */
     --highlight: #2a2a30; /* state layer */
 
     --muted: #26262c; /* surface-container-high */
@@ -82,57 +84,137 @@
 /* ==========================================================================
    Radix Themes — Material 3 component shaping
    ========================================================================== */
-@layer components {
-  /* Radix uses --default-font-family internally for its typography */
-  .radix-themes {
-    --default-font-family: "Roboto", "Roboto Flex", system-ui, -apple-system,
-      "Segoe UI", sans-serif;
-  }
+/* NOTE: These Radix Themes overrides are intentionally UNLAYERED.
+   Radix's own styles.css is unlayered, so any rule inside `@layer components`
+   would always lose the cascade to it. We scope each selector with
+   `.radix-themes` to raise specificity above Radix's low-specificity
+   `:where()` rules and guarantee the M3 shaping wins. */
 
-  /* Buttons become fully-rounded "pill" shapes (M3 filled/tonal buttons) */
-  .rt-Button,
-  .rt-BaseButton {
-    border-radius: 9999px;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-  }
+/* Radix uses --default-font-family internally for its typography */
+.radix-themes {
+  --default-font-family: "Roboto", "Roboto Flex", system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+}
 
-  /* Icon buttons are circular (M3 icon buttons) */
-  .rt-IconButton {
-    border-radius: 9999px;
-  }
+/* Buttons become fully-rounded "pill" shapes (M3 filled/tonal buttons) */
+.radix-themes :where(.rt-BaseButton, .rt-Button, .rt-IconButton) {
+  border-radius: 9999px !important;
+}
 
-  /* Expressive press feedback */
-  .rt-Button:active,
-  .rt-IconButton:active {
-    transform: scale(0.96);
-  }
+.radix-themes .rt-Button,
+.radix-themes .rt-BaseButton {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
 
-  /* Chips / badges are pill-shaped */
-  .rt-Badge {
-    border-radius: 9999px;
-    font-weight: 500;
-  }
+/* Filled buttons carry a subtle M3 elevation that lifts on hover */
+.radix-themes .rt-Button:where(.rt-variant-solid) {
+  box-shadow: var(--m3-elevation-1);
+}
 
-  /* Text fields & selects: M3 rounded fields */
-  .rt-TextFieldRoot,
-  .rt-SelectTrigger,
-  .rt-TextAreaRoot {
-    border-radius: var(--m3-corner-md);
-  }
+.radix-themes .rt-Button:where(.rt-variant-solid):hover {
+  box-shadow: var(--m3-elevation-2);
+}
 
-  /* Dialogs / popovers / menus: larger M3 corners + elevation */
-  .rt-DialogContent,
-  .rt-AlertDialogContent,
-  .rt-PopoverContent,
-  .rt-DropdownMenuContent,
-  .rt-SelectContent {
-    border-radius: var(--m3-corner-xl);
-    box-shadow: var(--m3-elevation-3);
-  }
+/* Expressive press feedback */
+.radix-themes .rt-Button:active,
+.radix-themes .rt-IconButton:active {
+  transform: scale(0.96);
+}
 
-  .rt-Card {
-    border-radius: var(--m3-corner-lg);
+/* Consistent M3 focus indicator */
+.radix-themes
+  :where(.rt-BaseButton, .rt-IconButton, .rt-SelectTrigger):focus-visible {
+  outline: 2px solid var(--accent-8);
+  outline-offset: 2px;
+}
+
+/* Chips / badges are pill-shaped */
+.radix-themes .rt-Badge {
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+/* Text fields & selects: fully-rounded pill inputs (Google / M3 style) */
+.radix-themes :where(.rt-TextFieldRoot, .rt-SelectTrigger) {
+  border-radius: 9999px !important;
+}
+
+/* A touch more inner padding so text clears the pill curve */
+.radix-themes .rt-TextFieldRoot :where(.rt-TextFieldInput) {
+  padding-inline: 0.35em;
+}
+
+/* Multi-line areas keep a large (not pill) radius */
+.radix-themes .rt-TextAreaRoot {
+  border-radius: var(--m3-corner-lg);
+}
+
+/* Dialogs / popovers / menus: larger M3 corners + elevation */
+.radix-themes .rt-DialogContent,
+.radix-themes .rt-AlertDialogContent,
+.radix-themes .rt-PopoverContent,
+.radix-themes .rt-DropdownMenuContent,
+.radix-themes .rt-SelectContent {
+  border-radius: var(--m3-corner-xl);
+  box-shadow: var(--m3-elevation-3);
+}
+
+.radix-themes .rt-Card {
+  border-radius: var(--m3-corner-xl);
+}
+
+/* ==========================================================================
+   Motion — subtle, expressive entrances used across the app
+   ========================================================================== */
+@keyframes m3-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes m3-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes m3-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-in {
+  animation: m3-fade-in 240ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.animate-fade-in-up {
+  animation: m3-fade-in-up 300ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.animate-drawer-in {
+  animation: m3-slide-in-right 300ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-drawer-in {
+    animation: none;
   }
 }
 

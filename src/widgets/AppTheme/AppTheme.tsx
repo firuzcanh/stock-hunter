@@ -40,7 +40,7 @@ const AppTheme: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       accentColor={accentColor as any}
       grayColor="gray"
       radius="large"
-      scaling="100%"
+      scaling="95%"
       panelBackground="solid"
     >
       {children}

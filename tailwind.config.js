@@ -17,6 +17,7 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         border: "var(--border)",
+        divider: "var(--divider)",
         panel: "var(--panel)",
         "panel-foreground": "var(--panel-foreground)",
         muted: "var(--muted)",

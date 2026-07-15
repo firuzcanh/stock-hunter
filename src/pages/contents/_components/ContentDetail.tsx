@@ -96,7 +96,7 @@ const ContentDetail: React.FC<{
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center gap-2 sticky z-[1] top-0 h-[60px] px-6 bg-panel text-panel-foreground border-b border-border">
+      <div className="flex items-center gap-2 sticky z-[1] top-0 h-[60px] px-6 bg-panel text-panel-foreground border-b border-divider">
         <Tooltip content="Original Title">
           <Text weight="bold" className="line-clamp-1 flex-1">
             {content.title}

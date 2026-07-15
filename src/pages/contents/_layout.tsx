@@ -3,14 +3,15 @@ import { Link } from "@/router";
 import { Outlet, useSearchParams } from "react-router-dom";
 
 import { Brand, Layout } from "@/components";
-import { Flex, Separator } from "@radix-ui/themes";
+import { Flex } from "@radix-ui/themes";
 
 import PanelFolders from "@/widgets/PanelFolders/PanelFolders";
 import PanelGenerate from "@/widgets/PanelGenerate/PanelGenerate";
-import PanelMedia from "@/widgets/PanelMedia/PanelMedia";
 
 import { ContentDrawerContext } from "./_components/drawer-context";
 import ContentDetail from "./_components/ContentDetail";
+
+const Divider = () => <div className="h-px bg-divider" />;
 
 const ContentLayout: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -52,15 +53,11 @@ const ContentLayout: React.FC = () => {
             </Link>
           </Flex>
 
-          <Separator size="4" />
+          <Divider />
 
           {/* Generate Content */}
           <PanelGenerate />
-          <Separator size="4" />
-
-          {/* Import Media */}
-          <PanelMedia />
-          <Separator size="4" />
+          <Divider />
 
           {/* Folder Management */}
           <PanelFolders />
@@ -70,7 +67,10 @@ const ContentLayout: React.FC = () => {
 
         {/* Detail Drawer */}
         {selectedId ? (
-          <Layout.Sidebar className="w-[460px] border-l border-border">
+          <Layout.Sidebar
+            key={selectedId}
+            className="w-[440px] border-l border-divider animate-drawer-in"
+          >
             <ContentDetail contentId={selectedId} onClose={close} />
           </Layout.Sidebar>
         ) : null}

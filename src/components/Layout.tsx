@@ -45,7 +45,7 @@ const LayoutContent = forwardRef<
     <div
       ref={ref}
       className={twMerge(
-        "flex-1 flex flex-col bg-background text-foreground border-x border-border",
+        "flex-1 flex flex-col bg-background text-foreground border-x border-divider",
         className
       )}
       {...props}
@@ -64,7 +64,7 @@ const LayoutHeader = forwardRef<
     <div
       ref={ref}
       className={twMerge(
-        "flex items-center sticky z-[1] top-0 h-[60px] px-6 bg-panel text-panel-foreground border-b border-border",
+        "flex items-center sticky z-[1] top-0 h-[60px] px-6 bg-panel text-panel-foreground border-b border-divider",
         className
       )}
       {...props}
