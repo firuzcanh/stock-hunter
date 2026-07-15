@@ -6,14 +6,14 @@ import { components, hooks, utils } from '@generouted/react-router/client'
 export type Path =
   | `/`
   | `/contents`
-  | `/contents/:id`
   | `/custom-contents`
   | `/guide`
   | `/media`
+  | `/settings`
   | `/tools`
 
 export type Params = {
-  '/contents/:id': { id: string }
+  
 }
 
 export type ModalPath = `/modals/coffee` | `/modals/reset`

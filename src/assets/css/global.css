@@ -2,24 +2,141 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   Material 3 Expressive — monochrome design tokens
+   Neutral tonal surfaces drive the UI; the accent color is used sparingly.
+   ========================================================================== */
 @layer base {
   :root {
-    --background: #fff;
-    --foreground: #000;
-    --border: #d4d4d8;
-    --highlight: #f4f4f5;
+    /* Surfaces */
+    --background: #f4f4f6; /* app canvas (surface-dim) */
+    --panel: #ffffff; /* elevated surface / cards */
+    --panel-foreground: #1a1a1e;
+    --foreground: #1a1a1e; /* on-surface */
 
-    --panel: #fff;
-    --panel-foreground: #000;
+    /* Lines & states */
+    --border: #e2e2e6; /* outline-variant */
+    --highlight: #ececf0; /* state layer (hover / active) */
 
-    --muted: #f4f4f5;
-    --muted-foreground: #71717a;
+    /* Muted / secondary */
+    --muted: #eaeaee; /* surface-container */
+    --muted-foreground: #57575c; /* on-surface-variant */
+
+    /* Material 3 shape scale */
+    --m3-corner-xs: 4px;
+    --m3-corner-sm: 8px;
+    --m3-corner-md: 12px;
+    --m3-corner-lg: 16px;
+    --m3-corner-xl: 24px;
+
+    /* Material 3 tonal elevation (soft shadows) */
+    --m3-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+    --m3-elevation-2: 0 2px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --m3-elevation-3: 0 6px 16px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.06);
+
+    --default-font-family: "Roboto", "Roboto Flex", system-ui, -apple-system,
+      "Segoe UI", sans-serif;
+  }
+
+  .dark {
+    --background: #121216; /* surface */
+    --panel: #1c1c21; /* surface-container */
+    --panel-foreground: #e5e5ea;
+    --foreground: #e5e5ea;
+
+    --border: #37373d; /* outline-variant */
+    --highlight: #2a2a30; /* state layer */
+
+    --muted: #26262c; /* surface-container-high */
+    --muted-foreground: #a2a2a9;
+
+    --m3-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+    --m3-elevation-2: 0 2px 6px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.35);
+    --m3-elevation-3: 0 6px 16px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  html,
+  body {
+    font-family: var(--default-font-family);
+    background: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Expressive motion: smooth, springy transitions on interactive surfaces */
+  button,
+  a,
+  .rt-Button,
+  .rt-IconButton,
+  .rt-BaseButton,
+  [role="button"] {
+    transition: background-color 180ms cubic-bezier(0.2, 0, 0, 1),
+      color 180ms cubic-bezier(0.2, 0, 0, 1),
+      box-shadow 180ms cubic-bezier(0.2, 0, 0, 1),
+      border-color 180ms cubic-bezier(0.2, 0, 0, 1),
+      transform 180ms cubic-bezier(0.2, 0, 0, 1);
   }
 }
 
+/* ==========================================================================
+   Radix Themes — Material 3 component shaping
+   ========================================================================== */
 @layer components {
+  /* Radix uses --default-font-family internally for its typography */
+  .radix-themes {
+    --default-font-family: "Roboto", "Roboto Flex", system-ui, -apple-system,
+      "Segoe UI", sans-serif;
+  }
+
+  /* Buttons become fully-rounded "pill" shapes (M3 filled/tonal buttons) */
+  .rt-Button,
+  .rt-BaseButton {
+    border-radius: 9999px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  /* Icon buttons are circular (M3 icon buttons) */
+  .rt-IconButton {
+    border-radius: 9999px;
+  }
+
+  /* Expressive press feedback */
+  .rt-Button:active,
+  .rt-IconButton:active {
+    transform: scale(0.96);
+  }
+
+  /* Chips / badges are pill-shaped */
+  .rt-Badge {
+    border-radius: 9999px;
+    font-weight: 500;
+  }
+
+  /* Text fields & selects: M3 rounded fields */
+  .rt-TextFieldRoot,
+  .rt-SelectTrigger,
+  .rt-TextAreaRoot {
+    border-radius: var(--m3-corner-md);
+  }
+
+  /* Dialogs / popovers / menus: larger M3 corners + elevation */
+  .rt-DialogContent,
+  .rt-AlertDialogContent,
+  .rt-PopoverContent,
+  .rt-DropdownMenuContent,
+  .rt-SelectContent {
+    border-radius: var(--m3-corner-xl);
+    box-shadow: var(--m3-elevation-3);
+  }
+
+  .rt-Card {
+    border-radius: var(--m3-corner-lg);
+  }
 }
 
+/* Keep the size-3 field/button typography consistent */
 .rt-TextFieldRoot:where(.rt-r-size-3),
 .rt-Button:where(.rt-r-size-3) {
   font-size: var(--font-size-2);

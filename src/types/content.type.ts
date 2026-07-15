@@ -9,6 +9,7 @@ export type ContentType = {
   categories: ContentCategoryType[];
   src: string;
   status: ContentStatusType;
+  folderId: string | null;
   createdAt: Date;
 };
 

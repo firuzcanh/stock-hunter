@@ -6,7 +6,7 @@ import { MediaActions } from "@/store/features/media.slice";
 
 import { Card, Flex, IconButton, TextField } from "@radix-ui/themes";
 import { ExternalLinkIcon, XIcon } from "lucide-react";
-import { Link } from "@/router";
+import { Link } from "react-router-dom";
 
 type MediaCardItemProps = {
   media: MediaType;
@@ -69,7 +69,7 @@ const MediaCardItem: React.FC<MediaCardItemProps> = ({ media }) => {
 
         {media?.contentId && (
           <IconButton asChild size="1" variant="soft" color="gray">
-            <Link to="/contents/:id" params={{ id: media.contentId }}>
+            <Link to={`/contents?item=${media.contentId}`}>
               <ExternalLinkIcon size="14" />
             </Link>
           </IconButton>

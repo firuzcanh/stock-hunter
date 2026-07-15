@@ -18,7 +18,7 @@ export class ShutterStockService
 
   async convertToContentJSON(json: JSONShutterStockType): Promise<ContentType> {
     if (!json) throw new Error("JSON cannot be an empty!");
-    const { configs } = store.getState();
+    const { configs, folder } = store.getState();
 
     let titleParaphrased = json.title;
     let keywords = json.keywords;
@@ -44,6 +44,7 @@ export class ShutterStockService
       status: "TODO",
       isEditorial: json.isEditorial,
       src: json.src,
+      folderId: folder.activeFolderId,
       createdAt: new Date(),
     };
   }

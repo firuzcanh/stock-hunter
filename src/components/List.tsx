@@ -78,7 +78,7 @@ const ListItem = forwardRef<
     <Component
       ref={ref}
       className={twMerge(
-        "relative text-sm p-2 rounded-lg hover:bg-highlight cursor-pointer",
+        "relative text-sm p-2.5 rounded-full hover:bg-highlight cursor-pointer transition-colors",
         isActive && "bg-highlight",
         isCompleted && "line-through text-muted-foreground",
         className

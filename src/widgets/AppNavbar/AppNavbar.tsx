@@ -17,7 +17,7 @@ const AppNavbar: React.FC = () => {
   const { pathname } = useLocation();
 
   return (
-    <div className="sticky top-0 flex flex-col justify-between h-screen border-r border-border bg-zinc-100">
+    <div className="sticky top-0 flex flex-col justify-between h-screen border-r border-border bg-muted text-foreground">
       <TabNav.Root className="flex-col shadow-none">
         {APP_NAVS.map((navItem) => {
           return (
@@ -34,6 +34,14 @@ const AppNavbar: React.FC = () => {
       </TabNav.Root>
 
       <TabNav.Root className="flex-col shadow-none">
+        <TabNav.Link
+          asChild
+          className={linkClass}
+          active={pathname === "/settings"}
+        >
+          <Link to="/settings">Settings</Link>
+        </TabNav.Link>
+
         <TabNav.Link
           asChild
           className={linkClass}

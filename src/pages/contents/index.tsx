@@ -1,189 +1,89 @@
-import type { ContentType } from "@/types/content.type";
-
 import { useMemo, useState } from "react";
-import { Link, useModals } from "@/router";
 import { format } from "date-fns";
 
-import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  ContentActions,
-  ContentSelectors,
-} from "@/store/features/content.slice";
+import { useModals } from "@/router";
+import { useAppSelector } from "@/store";
+import { ContentSelectors } from "@/store/features/content.slice";
+import { FolderSelectors } from "@/store/features/folder.slice";
 
-import {
-  Badge,
-  Button,
-  DropdownMenu,
-  Flex,
-  IconButton,
-  Select,
-  Text,
-} from "@radix-ui/themes";
-import {
-  ColumnFiltersState,
-  createColumnHelper,
-  RowSelectionState,
-} from "@tanstack/react-table";
-import { ChevronDownIcon, EraserIcon, EyeIcon, TrashIcon } from "lucide-react";
-import { Confirm, Empty, Layout, Table } from "@/components";
+import { Badge, Button, IconButton, Text, Tooltip } from "@radix-ui/themes";
+import { EraserIcon, LayoutGridIcon, ListIcon } from "lucide-react";
+import { Empty, Layout } from "@/components";
 import { SvgSetupWizard } from "@/components/illustrations";
+import { twMerge } from "tailwind-merge";
 
 import { CONTENT_STATUSES } from "@/constants/data";
+import { useContentDrawer } from "./_components/drawer-context";
+
+type ViewMode = "grid" | "list";
 
 const ContentsPage: React.FC = () => {
   const modals = useModals();
-  const dispatch = useAppDispatch();
+  const { selectedId, open } = useContentDrawer();
 
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
 
+  const activeFolderId = useAppSelector(FolderSelectors.selectActiveFolderId);
+  const activeFolder = useAppSelector((state) =>
+    activeFolderId ? FolderSelectors.selectById(state, activeFolderId) : null
+  );
   const contents = useAppSelector((state) =>
     ContentSelectors.selectAll(state.content)
   );
-  const selectedContents = useMemo(
-    () => contents?.filter((_, index) => rowSelection[index]),
-    [contents, rowSelection]
+
+  const items = useMemo(
+    () => contents.filter((content) => (content.folderId || null) === activeFolderId),
+    [contents, activeFolderId]
   );
 
-  const selectedContentIDs = useMemo(
-    () => selectedContents?.map((content) => content.id),
-    [selectedContents]
-  );
+  const folderName = activeFolder?.name || "Unfiled";
+  const hasItems = items.length > 0;
 
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const hasContents = contents?.length > 0;
-
-  const columnHelper = createColumnHelper<ContentType>();
-  const columns = [
-    columnHelper.display({
-      id: "select",
-      size: 0,
-      header: ({ table }) => {
-        return (
-          <input
-            type="checkbox"
-            checked={table.getIsAllRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-          />
-        );
-      },
-      cell: ({ row }) => (
-        <input
-          type="checkbox"
-          {...{
-            checked: row.getIsSelected(),
-            disabled: !row.getCanSelect(),
-            onChange: row.getToggleSelectedHandler(),
-          }}
-        />
-      ),
-    }),
-
-    columnHelper.accessor("title", {
-      header: "Title",
-      size: 600,
-      cell: ({ row }) => (
-        <Link
-          to="/contents/:id"
-          params={{ id: row.original.id }}
-          className="inline-block hover:underline"
-        >
-          {row.original.title}
-        </Link>
-      ),
-    }),
-    columnHelper.accessor("stockId", {
-      header: "Stock ID",
-      cell: ({ row }) => (
-        <a
-          href={`https://www.shutterstock.com/image-photo/${row.original.stockId}`}
-          target="_blank"
-          rel="nofollow noreferrel"
-          className="inline-block hover:underline"
-        >
-          {row.original.stockId}
-        </a>
-      ),
-    }),
-    columnHelper.accessor("status", {
-      header: "Status",
-      cell: ({ getValue }) => {
-        const status = CONTENT_STATUSES[getValue()] || CONTENT_STATUSES.TODO;
-        return <Badge color={status.color as any}>{status.label}</Badge>;
-      },
-    }),
-    columnHelper.accessor("createdAt", {
-      header: "Created",
-      cell: ({ getValue }) => (
-        <Text wrap="nowrap">
-          {getValue() ? format(getValue(), "dd MMM yyyy") : "-"}
-        </Text>
-      ),
-    }),
-    columnHelper.display({
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => (
-        <Flex align="center" gap="2">
-          <IconButton
-            asChild
-            color="gray"
-            variant="soft"
-            size="1"
-            aria-label="View"
-          >
-            <Link to="/contents/:id" params={{ id: row.original.id }}>
-              <EyeIcon size="14" />
-            </Link>
-          </IconButton>
-
-          <IconButton
-            color="red"
-            variant="soft"
-            size="1"
-            aria-label="Delete"
-            onClick={() => handleDelete(row.original.id)}
-          >
-            <TrashIcon size="14" />
-          </IconButton>
-        </Flex>
-      ),
-    }),
-  ];
-
-  const handleDelete = (id: string) => {
-    dispatch(ContentActions.removeOne(id));
-  };
-
-  const handleDeleteMany = () => {
-    dispatch(ContentActions.removeMany(selectedContentIDs));
-  };
-
-  const handleChangeStatus = (status: any | null) => {
-    setRowSelection({});
-    dispatch(
-      ContentActions.updateMany(
-        selectedContents?.map((content) => ({ ...content, status: status }))
-      )
+  const renderStatus = (status: keyof typeof CONTENT_STATUSES) => {
+    const config = CONTENT_STATUSES[status] || CONTENT_STATUSES.TODO;
+    return (
+      <Badge color={config.color as any} size="1">
+        {config.label}
+      </Badge>
     );
-  };
-
-  const handleSelectStatus = (status: any | null) => {
-    setRowSelection({});
-    if (status) {
-      setColumnFilters((prev) => [...prev, { id: "status", value: status }]);
-    } else {
-      setColumnFilters((prev) =>
-        prev.filter((column) => column.id !== "status")
-      );
-    }
   };
 
   return (
     <Layout.Content>
       <Layout.Header>
-        <Layout.Title>Panel</Layout.Title>
+        <Layout.Title>
+          {folderName}
+          <Badge ml="2" color="gray">
+            {items.length}
+          </Badge>
+        </Layout.Title>
 
         <Layout.HeaderSlot side="right">
+          <div className="flex items-center gap-1 mr-2">
+            <IconButton
+              size="1"
+              color="gray"
+              variant={viewMode === "grid" ? "solid" : "soft"}
+              aria-label="Grid view"
+              onClick={() => setViewMode("grid")}
+            >
+              <Tooltip content="Grid view">
+                <LayoutGridIcon size="16" />
+              </Tooltip>
+            </IconButton>
+            <IconButton
+              size="1"
+              color="gray"
+              variant={viewMode === "list" ? "solid" : "soft"}
+              aria-label="List view"
+              onClick={() => setViewMode("list")}
+            >
+              <Tooltip content="List view">
+                <ListIcon size="16" />
+              </Tooltip>
+            </IconButton>
+          </div>
+
           <Button
             size="1"
             color="red"
@@ -195,90 +95,78 @@ const ContentsPage: React.FC = () => {
         </Layout.HeaderSlot>
       </Layout.Header>
 
-      {hasContents && (
-        <div className="flex-1 flex flex-col p-6">
-          <Table.Root
-            columns={columns}
-            data={contents}
-            state={{
-              rowSelection,
-              columnFilters,
-            }}
-            listeners={{ onRowSelectionChange: setRowSelection }}
-          >
-            <Table.Header
-              startContent={
-                <DropdownMenu.Root>
-                  <DropdownMenu.Trigger>
-                    <Button color="gray" variant="surface">
-                      <Text>
-                        Status: <Text className="font-semibold">All</Text>
-                      </Text>
-                      <ChevronDownIcon size="16" />
-                    </Button>
-                  </DropdownMenu.Trigger>
-
-                  <DropdownMenu.Content>
-                    <DropdownMenu.Item
-                      onSelect={() => handleSelectStatus(null)}
-                    >
-                      All
-                    </DropdownMenu.Item>
-                    {Object.values(CONTENT_STATUSES).map((status) => (
-                      <DropdownMenu.Item
-                        key={status.value}
-                        onSelect={() => handleSelectStatus(status.value)}
-                      >
-                        {status.label}
-                      </DropdownMenu.Item>
-                    ))}
-                  </DropdownMenu.Content>
-                </DropdownMenu.Root>
-              }
-              endContent={
-                selectedContentIDs?.length ? (
-                  <>
-                    <Confirm
-                      description="You'll lost all data after clear them"
-                      onConfirm={handleDeleteMany}
-                    >
-                      <IconButton color="red" variant="soft">
-                        <TrashIcon className="w-4" />
-                      </IconButton>
-                    </Confirm>
-
-                    <Select.Root onValueChange={handleChangeStatus}>
-                      <Select.Trigger placeholder="Select Status" />
-
-                      <Select.Content>
-                        {Object.values(CONTENT_STATUSES).map((status) => {
-                          return (
-                            <Select.Item
-                              key={status.value}
-                              value={status.value}
-                            >
-                              {status.label}
-                            </Select.Item>
-                          );
-                        })}
-                      </Select.Content>
-                    </Select.Root>
-                  </>
-                ) : null
-              }
-            />
-            <Table.Body className="flex-1 overflow-y-auto" />
-          </Table.Root>
+      {hasItems ? (
+        <div className="flex-1 overflow-y-auto p-6">
+          {viewMode === "grid" ? (
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4">
+              {items.map((content) => (
+                <button
+                  key={content.id}
+                  onClick={() => open(content.id)}
+                  className={twMerge(
+                    "group text-left rounded-m3-lg border border-border overflow-hidden bg-panel shadow-m3-1 hover:shadow-m3-2 hover:-translate-y-0.5 transition-all duration-200",
+                    selectedId === content.id && "ring-2 ring-accent-8 border-transparent"
+                  )}
+                >
+                  <div className="aspect-square bg-highlight overflow-hidden">
+                    <img
+                      src={content.src}
+                      alt={content.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2 p-3">
+                    <Text size="2" className="line-clamp-2 font-medium">
+                      {content.title}
+                    </Text>
+                    {renderStatus(content.status)}
+                  </div>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col divide-y divide-border rounded-m3-lg border border-border bg-panel shadow-m3-1 overflow-hidden">
+              {items.map((content) => (
+                <button
+                  key={content.id}
+                  onClick={() => open(content.id)}
+                  className={twMerge(
+                    "flex items-center gap-3 p-3 text-left hover:bg-highlight transition-colors",
+                    selectedId === content.id && "bg-highlight"
+                  )}
+                >
+                  <img
+                    src={content.src}
+                    alt={content.title}
+                    className="w-14 h-14 rounded-m3-md object-cover border border-border shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <Text size="2" className="line-clamp-1 font-medium">
+                      {content.title}
+                    </Text>
+                    <Text size="1" color="gray">
+                      Stock ID: {content.stockId}
+                    </Text>
+                  </div>
+                  {renderStatus(content.status)}
+                  <Text size="1" color="gray" className="shrink-0">
+                    {content.createdAt
+                      ? format(content.createdAt, "dd MMM yyyy")
+                      : "-"}
+                  </Text>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-      )}
-
-      {!hasContents && (
+      ) : (
         <div className="flex-1 flex flex-col justify-center container max-w-screen-sm mb-10">
           <Empty.Root>
             <Empty.Icon children={<SvgSetupWizard />} />
-            <Empty.Title>No any contents found</Empty.Title>
+            <Empty.Title>No items in {folderName}</Empty.Title>
             <Empty.Description>
-              You can see list of your contents here after adding them.
+              Generate content while this folder is active, or move existing
+              items here from another folder.
             </Empty.Description>
           </Empty.Root>
         </div>

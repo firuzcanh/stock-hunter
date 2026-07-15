@@ -10,7 +10,7 @@ const DetailCardRoot = forwardRef<
     <div
       ref={ref}
       className={twMerge(
-        "relative group flex flex-col gap-2 p-5 rounded-lg hover:bg-highlight",
+        "relative group flex flex-col gap-2 p-5 rounded-m3-lg hover:bg-highlight transition-colors",
         className
       )}
       {...props}

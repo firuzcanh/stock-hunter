@@ -6,8 +6,15 @@ import { DEFAULT_CONFIGS } from "@/constants/configs";
 
 import { AI_MODELS } from "@/constants/data";
 
+export type ThemeMode = "light" | "dark" | "system";
+
 type ConfigsStateType = {
   platform: string;
+
+  appearance: {
+    theme: ThemeMode;
+    accentColor: string;
+  };
 
   ai: {
     provider: AIProvider;
@@ -24,6 +31,11 @@ type ConfigsStateType = {
 
 const initialState: ConfigsStateType = {
   platform: DEFAULT_CONFIGS.PLATFORM,
+
+  appearance: {
+    theme: DEFAULT_CONFIGS.THEME,
+    accentColor: DEFAULT_CONFIGS.ACCENT_COLOR,
+  },
 
   ai: {
     provider: DEFAULT_CONFIGS.AI_PROVIDER,
@@ -44,6 +56,14 @@ export const configsSlice = createSlice({
   reducers: {
     setPlatform(state, action: PayloadAction<string>) {
       state.platform = action.payload;
+    },
+
+    setTheme(state, action: PayloadAction<ThemeMode>) {
+      state.appearance.theme = action.payload;
+    },
+
+    setAccentColor(state, action: PayloadAction<string>) {
+      state.appearance.accentColor = action.payload;
     },
 
     setAIProvider(state, action: PayloadAction<AIProvider>) {

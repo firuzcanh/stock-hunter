@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "@/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAppDispatch } from "@/store";
 
@@ -10,6 +9,7 @@ import { ContentActions } from "@/store/features/content.slice";
 
 import { Button, Flex, TextField } from "@radix-ui/themes";
 import { Panel } from "@/components";
+import { useContentDrawer } from "@/pages/contents/_components/drawer-context";
 
 type PanelGenerateForm = {
   text: string;
@@ -17,7 +17,7 @@ type PanelGenerateForm = {
 
 const PanelGenerate: React.FC = () => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  const { open } = useContentDrawer();
 
   const form = useForm<PanelGenerateForm>();
   const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +32,7 @@ const PanelGenerate: React.FC = () => {
       dispatch(ContentActions.upsertOne(contentJson));
 
       form.reset({ text: "" });
-      navigate("/contents/:id", { params: { id: contentJson.id } });
+      open(contentJson.id);
     } catch (error: any) {
       toast.dismiss();
       toast.error(error?.message || "Something went wrong.");

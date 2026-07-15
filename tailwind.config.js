@@ -24,8 +24,37 @@ export default {
         accent: "var(--accent-9)",
         highlight: "var(--highlight)",
       },
+
+      fontFamily: {
+        sans: [
+          "Roboto",
+          "Roboto Flex",
+          "system-ui",
+          "-apple-system",
+          "Segoe UI",
+          "sans-serif",
+        ],
+      },
+
+      // Material 3 shape scale
+      borderRadius: {
+        "m3-xs": "4px",
+        "m3-sm": "8px",
+        "m3-md": "12px",
+        "m3-lg": "16px",
+        "m3-xl": "24px",
+        "m3-2xl": "28px",
+      },
+
+      // Material 3 tonal elevation
+      boxShadow: {
+        "m3-1": "var(--m3-elevation-1)",
+        "m3-2": "var(--m3-elevation-2)",
+        "m3-3": "var(--m3-elevation-3)",
+      },
     },
   },
+  darkMode: "class",
   plugins: [
     require("@tailwindcss/typography"),
     plugin(function ({ addUtilities }) {

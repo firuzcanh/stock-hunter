@@ -1,6 +1,5 @@
 import { ContentType } from "@/types/content.type";
 
-import { Navigate, useParams } from "@/router";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { useState } from "react";
 
@@ -9,33 +8,32 @@ import {
   ContentActions,
   ContentSelectors,
 } from "@/store/features/content.slice";
+import { FolderSelectors } from "@/store/features/folder.slice";
 import { MediaSelectors } from "@/store/features/media.slice";
 import { shuffleArray } from "@/utils/functions";
 
-import {
-  Confirm,
-  ContentEdit,
-  Copy,
-  DetailCard,
-  Layout,
-  Marker,
-} from "@/components";
+import { Confirm, ContentEdit, Copy, DetailCard, Marker } from "@/components";
 import {
   Badge,
   Grid,
   IconButton,
   Link as RadixLink,
+  Select,
   Separator,
+  Text,
   Tooltip,
 } from "@radix-ui/themes";
-import { RefreshCwIcon, TrashIcon } from "lucide-react";
-import Alerts from "./_components/Alerts";
+import { RefreshCwIcon, TrashIcon, XIcon } from "lucide-react";
+import Alerts from "./Alerts";
 
 import { DEFAULT_CONFIGS } from "@/constants/configs";
 
-const ContentsDetailPage: React.FC = () => {
-  const { id: contentId } = useParams("/contents/:id");
+const UNFILED = "__unfiled__";
 
+const ContentDetail: React.FC<{
+  contentId: string;
+  onClose: () => void;
+}> = ({ contentId, onClose }) => {
   const dispatch = useAppDispatch();
 
   // Config Options
@@ -46,12 +44,17 @@ const ContentsDetailPage: React.FC = () => {
     ContentSelectors.selectById(state.content, contentId)
   );
 
+  // Folders (for moving)
+  const folders = useAppSelector(FolderSelectors.selectAll);
+
   // Medias Array
   const medias = useAppSelector((state) =>
     MediaSelectors.selectManyByContentId(state.media, contentId)
   );
 
   const [isLoadingParaphrase, setIsLoadingParaphrase] = useState(false);
+
+  if (!content) return null;
 
   const categoriesAsString = (content?.categories || [])
     ?.map((category) => category.name)
@@ -79,48 +82,80 @@ const ContentsDetailPage: React.FC = () => {
 
   const handleDelete = () => {
     dispatch(ContentActions.removeOne(contentId));
+    onClose();
   };
 
   const handleUpdate = (key: keyof ContentType, value: any) => {
     dispatch(ContentActions.updateOne({ id: contentId, [key]: value }));
   };
 
-  if (!content) {
-    return <Navigate to="/contents" replace />;
-  }
+  const handleMove = (value: string) => {
+    handleUpdate("folderId", value === UNFILED ? null : value);
+  };
 
   return (
-    <Layout.Content>
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <Layout.Header>
+      <div className="flex items-center gap-2 sticky z-[1] top-0 h-[60px] px-6 bg-panel text-panel-foreground border-b border-border">
         <Tooltip content="Original Title">
-          <Layout.Title className="line-clamp-1 max-w-[80%]">
+          <Text weight="bold" className="line-clamp-1 flex-1">
             {content.title}
-          </Layout.Title>
+          </Text>
         </Tooltip>
 
-        <Layout.HeaderSlot side="right">
-          <Confirm onConfirm={handleDelete}>
-            <IconButton color="gray" variant="ghost" aria-label="Delete">
-              <Tooltip content="Delete">
-                <TrashIcon size="16" />
-              </Tooltip>
-            </IconButton>
-          </Confirm>
-        </Layout.HeaderSlot>
-      </Layout.Header>
+        <Confirm onConfirm={handleDelete}>
+          <IconButton color="gray" variant="ghost" aria-label="Delete">
+            <Tooltip content="Delete">
+              <TrashIcon size="16" />
+            </Tooltip>
+          </IconButton>
+        </Confirm>
+
+        <IconButton
+          color="gray"
+          variant="ghost"
+          aria-label="Close"
+          onClick={onClose}
+        >
+          <Tooltip content="Close">
+            <XIcon size="18" />
+          </Tooltip>
+        </IconButton>
+      </div>
 
       {/* Content */}
-      <div className="p-8">
+      <div className="flex-1 overflow-y-auto p-5">
         {/* Alert Messages */}
         <Alerts content={content} />
+
+        {/* START :: Folder */}
+        <DetailCard.Root>
+          <DetailCard.Label children={<Marker>Folder</Marker>} />
+          <DetailCard.Slot>
+            <Select.Root
+              value={content.folderId || UNFILED}
+              onValueChange={handleMove}
+            >
+              <Select.Trigger className="w-full" />
+              <Select.Content>
+                <Select.Item value={UNFILED}>Unfiled</Select.Item>
+                {folders.map((folder) => (
+                  <Select.Item key={folder.id} value={folder.id}>
+                    {folder.name}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Root>
+          </DetailCard.Slot>
+        </DetailCard.Root>
+        {/* END :: Folder */}
 
         {/* START :: Medias */}
         {medias?.length > 0 ? (
           <DetailCard.Root>
             <DetailCard.Label children={<Marker>Medias</Marker>} />
             <DetailCard.Slot>
-              <Grid columns="8" gap="3">
+              <Grid columns="4" gap="3">
                 {medias?.map((media) => (
                   <img
                     key={media.id}
@@ -347,8 +382,8 @@ const ContentsDetailPage: React.FC = () => {
         </DetailCard.Root>
         {/* END :: Original Image */}
       </div>
-    </Layout.Content>
+    </div>
   );
 };
 
-export default ContentsDetailPage;
+export default ContentDetail;

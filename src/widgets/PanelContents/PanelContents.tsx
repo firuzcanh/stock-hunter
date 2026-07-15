@@ -1,5 +1,4 @@
-import { useLocation } from "react-router-dom";
-import { Link } from "@/router";
+import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store";
 
 import {
@@ -12,7 +11,7 @@ import { TrashIcon } from "lucide-react";
 import { Confirm, Copy, List, Panel } from "@/components";
 
 const PanelContents: React.FC = () => {
-  const { pathname } = useLocation();
+  const { search } = useLocation();
   const dispatch = useAppDispatch();
 
   const contentGroups = useAppSelector(ContentSelectors.selectGroupByDate);
@@ -63,7 +62,7 @@ const PanelContents: React.FC = () => {
                   {group.contents ? (
                     <List.Content className="-mx-2">
                       {group.contents.map((content) => {
-                        const isActive = pathname.includes(content.id);
+                        const isActive = search.includes(content.id);
                         return (
                           <Copy.Slot
                             value={`${content.titleParaphrased} ID_${content.id}`}
@@ -74,10 +73,7 @@ const PanelContents: React.FC = () => {
                               isCompleted={content.status === "DONE"}
                               isActive={isActive}
                             >
-                              <Link
-                                to="/contents/:id"
-                                params={{ id: content.id }}
-                              >
+                              <Link to={`/contents?item=${content.id}`}>
                                 <List.ItemTitle>{content.title}</List.ItemTitle>
                               </Link>
                             </List.Item>
